@@ -22,10 +22,11 @@ fi
 # Install pre-commit and pre-commit-hooks
 pip install pre-commit
 pip install shellcheck-py
+pip install conventional-pre-commit
 
 # Initialize pre-commit
 if [ -f ".pre-commit-config.yaml" ]; then
-    pre-commit install
+    pre-commit install --install-hooks
     echo "Pre-commit hooks installed successfully!"
 else
     echo "Error: .pre-commit-config.yaml not found. Please create one first."
