@@ -4,14 +4,15 @@ default_install_hook_types:
 
 repos:
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v2.3.0
+    rev: v4.0.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
-        args: [--force-scope, feat, fix, refactor, test, docs, build, ops, chore]
+        args:
+          [--verbose, --force-scope, feat, fix, refactor, test, docs, build, ops, chore]
 
   - repo: https://github.com/cisagov/pre-commit-packer
-    rev: v0.0.2
+    rev: v0.3.0
     hooks:
       - id: packer_validate
         files: ^infra/packer/.*\.hcl$
@@ -23,3 +24,17 @@ repos:
     hooks:
       - id: shellcheck
         files: ^scripts/.*\.sh$
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.3
+    hooks:
+      - id: terraform_fmt
+        files: ^infra/terraform/.*\.tf$
+      - id: terraform_validate
+        files: ^infra/terraform/.*\.tf$
+      # - id: terraform_docs
+      #   files: ^infra/terraform/.*\.tf$
+      - id: terraform_tflint
+        files: ^infra/terraform/.*\.tf$
+      - id: terraform_trivy
+        files: ^infra/terraform/.*\.tf$
