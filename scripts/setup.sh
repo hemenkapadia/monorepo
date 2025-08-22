@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Uncomment to demug
+# Uncomment to debug
 # set -x
 
 # Exit on error
@@ -23,9 +23,9 @@ if ! command -v pip &>/dev/null; then
 fi
 
 # Install pre-commit and pre-commit-hooks
-pip install pre-commit
-pip install shellcheck-py
-pip install conventional-pre-commit
+pip install --user pre-commit
+pip install --user shellcheck-py
+pip install --user conventional-pre-commit
 
 # Initialize pre-commit
 if [ -f ".pre-commit-config.yaml" ]; then
