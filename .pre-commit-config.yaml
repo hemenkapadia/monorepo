@@ -1,0 +1,63 @@
+# Pre-commit Docs: https://pre-commit.com/index.html#pre-commit-configyaml---top-level
+
+# Docs: https://pre-commit.com/index.html#confining-hooks-to-run-at-certain-stages
+# Supported hook types: https://pre-commit.com/index.html#supported-git-hooks
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+# Pre-config Repos: https://pre-commit.com/index.html#pre-commit-configyaml---repos
+repos:
+  # Pre-commit for conventional commits: https://www.conventionalcommits.org/en/v1.0.0/#specification
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    # Pre-config Hooks: https://pre-commit.com/index.html#pre-commit-configyaml---hooks
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args:
+          [--verbose, --force-scope, feat, fix, refactor, test, docs, build, ops, chore]
+
+  # Pre-commit for pre-commit-hooks: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: check-xml
+      - id: detect-aws-credentials
+      - id: detect-private-key
+
+  # Pre-commit to invoke Shellcheck for scripts: https://github.com/shellcheck-py/shellcheck-py
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        files: ^scripts/.*\.sh$
+
+  # Pre-commit for Packer HCL files: https://github.com/cisagov/pre-commit-packer
+  - repo: https://github.com/cisagov/pre-commit-packer
+    rev: v0.3.0
+    hooks:
+      - id: packer_validate
+        files: ^infra/packer/.*\.hcl$
+      - id: packer_fmt
+        files: ^infra/packer/.*\.hcl$
+
+  # Pre-commit for Terraform HCL files: https://github.com/antonbabenko/pre-commit-terraform
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.3
+    hooks:
+      - id: terraform_fmt
+        files: ^infra/terraform/.*\.tf$
+      - id: terraform_validate
+        files: ^infra/terraform/.*\.tf$
+      # - id: terraform_docs
+      #   files: ^infra/terraform/.*\.tf$
+      - id: terraform_tflint
+        files: ^infra/terraform/.*\.tf$
+      - id: terraform_trivy
+        files: ^infra/terraform/.*\.tf$
