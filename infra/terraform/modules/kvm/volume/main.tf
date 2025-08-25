@@ -1,0 +1,35 @@
+# Storage Volume (disk image)
+
+# Validation rule: must provide one of source or size
+locals {
+  invalid_config = (
+    (var.volume_size_gb == null && var.volume_source == null) ||
+    (var.volume_size_gb != null && var.volume_source != null)
+  )
+}
+
+# Hard fail if both or neither are provided
+resource "null_resource" "validate" {
+  count = local.invalid_config ? 1 : 0
+
+  provisioner "local-exec" {
+    command = "echo 'Error: You must set either size or source (but not both) for libvirt_volume.' && exit 1"
+  }
+}
+
+# Create volume from source image
+resource "libvirt_volume" "from_source" {
+  count  = var.volume_source != null ? 1 : 0
+  name   = var.volume_name
+  pool   = var.volume_pool
+  source = var.volume_source
+}
+
+# Create empty volume of given size
+resource "libvirt_volume" "from_size" {
+  count = var.volume_size_gb != null ? 1 : 0
+  name  = var.volume_name
+  pool  = var.volume_pool
+  size  = abs(var.volume_size_gb * 1000 * 1000 * 1000)
+}
+
