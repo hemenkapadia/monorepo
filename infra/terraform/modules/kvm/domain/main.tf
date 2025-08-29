@@ -2,9 +2,6 @@
 
 ## Ensure at least one disk
 locals {
-  # a boolean, set to true if var.disks is empty
-  disk_count_invalid = length(var.disks) == 0
-
   # Validate each NIC has at least one of network_id or network_name
   invalid_nics = [
     for i, nic in var.network_interfaces : i
@@ -24,19 +21,6 @@ locals {
   )
 }
 
-# Hard fail (friendly messages) if invalid inputs
-resource "null_resource" "validate" {
-  count = (local.disk_count_invalid || length(local.invalid_nics) > 0) ? 1 : 0
-
-  provisioner "local-exec" {
-    command = join(" && ", compact([
-      local.disk_count_invalid ? "echo 'ERROR: var.disks must include at least one disk (volume_id).'" : "",
-      length(local.invalid_nics) > 0 ? "echo 'ERROR: Each network interface must set network_id or network_name. Offenders: ${join(", ", [for idx in local.invalid_nics : tostring(idx)])}.'" : "",
-      "exit 1"
-    ]))
-  }
-}
-
 # Create Cloud Init Disk if cloudinit.create = true
 resource "libvirt_cloudinit_disk" "cloudinit_disk" {
   count = try(var.cloudinit.create, false) ? 1 : 0
@@ -51,6 +35,18 @@ resource "libvirt_cloudinit_disk" "cloudinit_disk" {
 
 # Create the domain
 resource "libvirt_domain" "domain" {
+  lifecycle {
+    precondition {
+      condition     = length(local.invalid_nics) == 0
+      error_message = "Minimum one network interface required"
+    }
+    precondition {
+      condition     = length(var.disks) > 0
+      error_message = "Minimum one storage disk required"
+    }
+  }
+
+
   name = var.name
 
   # Core Properties
