@@ -25,9 +25,15 @@ variable "network_autostart" {
   default     = true
 }
 
+variable "network_dhcp_enabled" {
+  type        = bool
+  description = "Enable DHCP for the libvirt network. Enabled by default"
+  default     = true
+}
+
 variable "network_dns_enabled" {
   type        = bool
-  description = "Enable DNS for the libvirt network"
+  description = "Enable DNS for the libvirt network. Enabled by default"
   default     = true
 }
 

@@ -5,6 +5,9 @@ resource "libvirt_network" "network" {
   addresses = var.network_address_cidr
   mode      = var.network_mode
   autostart = var.network_autostart
+  dhcp {
+    enabled = var.network_dhcp_enabled
+  }
   dns {
     enabled    = var.network_dns_enabled
     local_only = var.network_dns_local_only
