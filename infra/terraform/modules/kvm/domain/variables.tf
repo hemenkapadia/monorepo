@@ -141,7 +141,7 @@ variable "autostart" {
 }
 
 variable "running" {
-  description = "Set to false to stop instance. By default is true to start the instnace"
+  description = "If true, the VM is started once created. If false, the VM is created but in stopped state, it does not stop a running VM."
   type        = bool
   default     = true
 }
