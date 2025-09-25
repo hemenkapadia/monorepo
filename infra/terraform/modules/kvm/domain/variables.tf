@@ -5,16 +5,16 @@ variable "name" {
 }
 
 # Domain Core Properties (CPU, RAM, Disks, Network Interface)
-variable "vcpu" {
+variable "vCPU" {
   description = "Number of virtual CPUs"
   type        = number
   default     = 2
 }
 
-variable "memory" {
+variable "memory_gb" {
   description = "Memory in MB"
   type        = number
-  default     = 2048
+  default     = 2
 }
 
 variable "disks" {

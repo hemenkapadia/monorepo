@@ -50,8 +50,8 @@ resource "libvirt_domain" "domain" {
   name = var.name
 
   # Core Properties
-  vcpu   = var.vcpu
-  memory = var.memory
+  vcpu   = var.vCPU
+  memory = var.memory_gb * 1024
 
   dynamic "disk" {
     for_each = { for i, d in var.disks : i => d }
