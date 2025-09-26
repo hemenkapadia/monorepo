@@ -19,3 +19,9 @@ variable "volume_size_gb" {
   default     = null
   description = "Since of volume in bytes. Not needed when volume_source is specified."
 }
+
+variable "volume_base_volume_name" {
+  type        = string
+  default     = null
+  description = "Name of the base volume to use for this volume. Optional, but used only when creating volume from size."
+}

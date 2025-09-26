@@ -1,10 +1,16 @@
 # Storage Volume (disk image)
 
-# Validation rule: must provide one of source or size
+# Invalid configuration if:
+#   size and source, both are not provided
+#   size and source, both are provided
+#   base volume and source, both are provided 
+#   base volume is provided but size is not provided
 locals {
   invalid_config = (
     (var.volume_size_gb == null && var.volume_source == null) ||
-    (var.volume_size_gb != null && var.volume_source != null)
+    (var.volume_size_gb != null && var.volume_source != null) ||
+    (var.volume_base_volume_name != null && var.volume_source != null) ||
+    (var.volume_base_volume_name != null && var.volume_size_gb == null)
   )
 }
 
@@ -27,9 +33,10 @@ resource "libvirt_volume" "from_source" {
 
 # Create empty volume of given size
 resource "libvirt_volume" "from_size" {
-  count = var.volume_size_gb != null ? 1 : 0
-  name  = var.volume_name
-  pool  = var.volume_pool
-  size  = abs(var.volume_size_gb * 1000 * 1000 * 1000)
+  count            = var.volume_size_gb != null ? 1 : 0
+  name             = var.volume_name
+  pool             = var.volume_pool
+  size             = abs(var.volume_size_gb * 1024 * 1024 * 1024)
+  base_volume_name = var.volume_base_volume_name != null ? var.volume_base_volume_name : null
 }
 

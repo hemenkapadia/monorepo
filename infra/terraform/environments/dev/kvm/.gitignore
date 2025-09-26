@@ -1,2 +1,5 @@
 # terraform state local backend
 backend
+
+# id*.pub files in cloud_init folder
+cloud_init/id_*.pub
