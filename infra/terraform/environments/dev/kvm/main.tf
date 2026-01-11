@@ -3,8 +3,10 @@ locals {
   org_storage_pool_name = "${var.org_name}-storage-pool"
   org_storage_pool_path = "${var.org_storage_pool_base_path}/${local.org_storage_pool_name}"
   # Network variables
-  org_network_name   = "${var.org_name}-network"
-  org_network_domain = (var.org_domain == null || var.org_domain == "") ? "${local.org_network_name}.home.arpa" : var.org_domain
+  org_network_name = "${var.org_name}-network"
+  org_network_domain = (
+    (var.org_network_domain == null || var.org_network_domain == "") ? "${var.org_name}.hemen.home.arpa" : var.org_network_domain
+  )
 }
 
 module "org_storage_pool" {
@@ -15,16 +17,18 @@ module "org_storage_pool" {
 }
 
 module "org_network" {
-  source                 = "../../../modules/kvm/network"
-  network_name           = local.org_network_name
-  network_domain         = local.org_network_domain
-  network_address_cidr   = var.org_network_address_cidr
-  network_mode           = var.org_network_mode
-  network_autostart      = var.org_network_autostart
-  network_dns_enabled    = var.org_network_dns_enabled
-  network_dns_local_only = var.org_network_dns_local_only
-  network_dns_forwarders = var.org_network_dns_forwarders
-  network_dns_hosts      = var.org_network_dns_hosts
+  source                  = "../../../modules/kvm/network"
+  network_name            = local.org_network_name
+  network_domain          = local.org_network_domain
+  network_address_cidr    = var.org_network_address_cidr
+  network_mode            = var.org_network_mode
+  network_autostart       = var.org_network_autostart
+  network_dhcp_enabled    = var.org_network_dhcp_enabled
+  network_dns_enabled     = var.org_network_dns_enabled
+  network_dns_local_only  = var.org_network_dns_local_only
+  network_dns_forwarders  = var.org_network_dns_forwarders
+  network_dns_hosts       = var.org_network_dns_hosts
+  network_dnsmasq_options = var.org_network_dnsmasq_options
 }
 
 module "kvm_cluster" {

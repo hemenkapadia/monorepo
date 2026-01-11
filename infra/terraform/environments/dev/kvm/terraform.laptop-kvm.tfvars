@@ -1,13 +1,29 @@
 # Global Organization level variables
 # Only letters. Creates domain as org_name.libvirtdev.me
-org_name = "hklibvirt"
+# org_name = "laptop-kvm"
 
 # Storage Pool variables
 org_storage_pool_base_path = "/var/lib/libvirt/images"
 
 # Network variables
 org_network_address_cidr = ["192.168.75.0/24"]
-
+# org_network_domain       = "hklibvirt.home.arpa"
+# org_network_dns_hosts = [
+#   {
+#     hostname = "static_host_1"
+#     ip       = "192.168.75.41"
+#   },
+#   {
+#     hostname = "static_host_2"
+#     ip       = "192.168.75.42"
+#   }
+# ]
+# org_network_dnsmasq_options = [
+#   {
+#     option_name  = "address"
+#     option_value = "/something.hklibvirt.home.arpa/192.168.75.55"
+#   }
+# ]
 
 # Cluster variables
 cluster_node_name_prefix = "k8s-cluster"

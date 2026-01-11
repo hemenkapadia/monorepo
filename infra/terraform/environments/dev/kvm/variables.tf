@@ -16,7 +16,7 @@ variable "org_storage_pool_type" {
 }
 
 ## Network variables
-variable "org_domain" {
+variable "org_network_domain" {
   type        = string
   description = "Network Domain for the Organization"
   default     = null
@@ -36,6 +36,12 @@ variable "org_network_mode" {
 variable "org_network_autostart" {
   type        = bool
   description = "Autostart the Organization network"
+  default     = true
+}
+
+variable "org_network_dhcp_enabled" {
+  type        = bool
+  description = "Enable dhcp on the Organization network"
   default     = true
 }
 
@@ -78,6 +84,21 @@ Each object should have:
   - hostname  (string)
 EOT
 }
+
+variable "org_network_dnsmasq_options" {
+  type = list(object({
+    option_name  = string
+    option_value = string
+  }))
+  default     = []
+  description = <<EOT
+List of dnsmasq options to be passed to the libvirt network.
+Each object should have:
+  - option_name  (string, e.g. "dhcp-option")
+  - option_value (string, e.g. "6,8.8.8.8")
+EOT
+}
+
 
 # Cluster variables
 variable "cluster_node_name_prefix" {
