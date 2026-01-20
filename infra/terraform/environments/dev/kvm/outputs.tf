@@ -18,7 +18,7 @@ output "org_network_id" {
   value       = module.org_network.network_id
 }
 
-output "cluster_nodes" {
-  description = "List of objects for each cluster node with name, id, IP addresses, and MAC addresses"
-  value       = module.kvm_cluster.cluster_nodes
-}
+# output "cluster_nodes" {
+#   description = "List of objects for each cluster node with name, id, IP addresses, and MAC addresses"
+#   value       = module.kvm_cluster.cluster_nodes
+# }

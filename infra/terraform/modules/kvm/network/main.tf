@@ -2,68 +2,50 @@
 resource "libvirt_network" "network" {
   lifecycle {
     precondition {
-      condition     = var.network_mode != "bridge" || var.network_bridge != null
+      condition     = var.network_mode != "bridge" || var.network_bridge_interface_name != null
       error_message = "network_bridge is required when network_mode is 'bridge'"
     }
     precondition {
-      condition     = var.network_mode != "nat" || length(var.network_address_cidr) > 0
-      error_message = "network_address_cidr is required when network_mode is 'nat'"
+      condition = var.network_mode != "nat" || (
+        var.network_nat_gateway_ip != null &&
+        var.network_nat_netmask != null &&
+        var.network_nat_dhcp_range_start != null &&
+        var.network_nat_dhcp_range_end != null
+      )
+      error_message = "network_nat_gateway_ip, network_nat_netmask, network_nat_dhcp_range_start, and network_nat_dhcp_range_end are required when network_mode is 'nat'"
     }
   }
 
   name      = var.network_name
-  domain    = var.network_mode == "bridge" ? null : var.network_domain
-  addresses = var.network_mode == "bridge" ? [] : var.network_address_cidr
-  mode      = var.network_mode
-  bridge    = var.network_mode == "bridge" ? var.network_bridge : null
   autostart = var.network_autostart
-
-  # DHCP configuration (only for NAT mode)
-  dynamic "dhcp" {
-    for_each = var.network_mode == "bridge" ? [] : [1]
-    content {
-      enabled = var.network_dhcp_enabled
-    }
+  ipv6      = "no"
+  bridge = (var.network_mode == "bridge" && var.network_bridge_interface_name != null) ? {
+    name = var.network_bridge_interface_name
+  } : null
+  forward = {
+    mode = var.network_mode
   }
-
-  # DNS configuration (only for NAT mode)
-  dynamic "dns" {
-    for_each = var.network_mode == "bridge" ? [] : [1]
-    content {
-      enabled    = var.network_dns_enabled
-      local_only = var.network_dns_local_only
-
-      # Add host entries
-      dynamic "hosts" {
-        for_each = var.network_dns_hosts
-        content {
-          ip       = hosts.value.ip
-          hostname = hosts.value.hostname
+  domain = var.network_mode != "bridge" ? {
+    name       = var.network_domain
+    local_only = var.network_domain_local_only ? "yes" : "no"
+  } : null
+  dns = (var.network_mode != "bridge" && var.network_dns_enabled) ? {
+    enabled             = "yes"
+    forward_plain_names = var.network_dns_forward_plain_names ? "yes" : "no"
+    forwarders          = var.network_dns_forwarders
+    host                = var.network_dns_host
+  } : null
+  ips = var.network_mode == "nat" ? [{
+    address = var.network_nat_gateway_ip
+    netmask = var.network_nat_netmask
+    dhcp = {
+      ranges = [
+        {
+          start = var.network_nat_dhcp_range_start
+          end   = var.network_nat_dhcp_range_end
         }
-      }
-
-      # Add forwarders
-      dynamic "forwarders" {
-        for_each = var.network_dns_forwarders
-        content {
-          domain  = try(forwarders.value.domain, null)
-          address = forwarders.value.addr
-        }
-      }
+      ]
+      hosts = var.network_nat_dhcp_hosts
     }
-  }
-
-  # Add dnsmasq_options (only for NAT mode)
-  dynamic "dnsmasq_options" {
-    for_each = var.network_mode == "bridge" ? [] : [1]
-    content {
-      dynamic "options" {
-        for_each = var.network_dnsmasq_options
-        content {
-          option_name  = options.value.option_name
-          option_value = options.value.option_value
-        }
-      }
-    }
-  }
+  }] : []
 }
