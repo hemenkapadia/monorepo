@@ -1,2 +1,5 @@
 # Editor specific files
 .vscode/
+
+# All .terraform directories
+.terraform

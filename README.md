@@ -4,7 +4,7 @@ This repository serves as a template and learning project for building a complet
 
 ## Repository Structure
 
-```
+```bash
 monorepo/
 │
 ├── infra/                    # Base cloud infrastructure setup
