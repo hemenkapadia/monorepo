@@ -47,7 +47,7 @@ resource "libvirt_network" "network" {
         for_each = var.network_dns_forwarders
         content {
           domain  = try(forwarders.value.domain, null)
-          address = forwarders.value.addr
+          address = forwarders.value.address
         }
       }
     }
