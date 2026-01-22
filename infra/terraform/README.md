@@ -1,4 +1,4 @@
-# Terraform Infrastructure Management
+# Infrastructure Provisioning using Terraform
 
 This repository contains Terraform configurations for managing infrastructure across multiple cloud providers and virtualization platforms. The structure is designed to support multiple environments and organizations using Terraform workspaces.
 
@@ -16,13 +16,14 @@ The `environments/` directory contains environment-specific configurations that 
 - **State Management**: Terraform Workspaces are used for per organization/environment state management.
 
 **Structure:**
-
+ Showing the main files, other terraform files are self explanatory.
 ```bash
 environments/
 ├── dev/
 │   └── kvm/                            # Local KVM virtualization for development
 │       ├── main.tf                     # Main infrastructure configuration
 │       ├── variables.tf
+│       ├── terraform-org-deploy.sh     # Helper script to deploy org specific infrastructure
 │       ├── terraform.org_name.tfvars   # Org specific variable values
 │       ├── backend.tf
 │       ├── terraform.tfstate.d         # Org specific tfstate
