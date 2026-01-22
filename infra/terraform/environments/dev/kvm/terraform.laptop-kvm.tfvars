@@ -1,13 +1,26 @@
 # Global Organization level variables
 # Only letters. Creates domain as org_name.libvirtdev.me
-# org_name = "laptop-kvm"
+org_name = "laptop-kvm"
 
 # Storage Pool variables
 org_storage_pool_base_path = "/var/lib/libvirt/images"
+org_storage_pool_type      = "dir"
 
 # Network variables
+org_network_domain       = "laptop-kvm.hemen.home.arpa"
 org_network_address_cidr = ["192.168.75.0/24"]
-# org_network_domain       = "hklibvirt.home.arpa"
+org_network_mode         = "nat"
+org_network_autostart    = true
+org_network_dhcp_enabled = true
+org_network_dns_enabled  = true
+org_network_dns_local_only = false
+org_network_dns_forwarders = [
+  {
+    domain  = "hemen.home.arpa"
+    address = "192.168.114.31"
+  }
+]
+
 # org_network_dns_hosts = [
 #   {
 #     hostname = "static_host_1"
