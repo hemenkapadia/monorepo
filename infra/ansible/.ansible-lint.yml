@@ -1,0 +1,11 @@
+---
+# Ansible Lint Configuration
+# Profile: basic - Enforces core rules and best practices
+profile: basic
+
+exclude_paths:
+  - infra/ansible/collections/
+  - collections/
+
+warn_list:
+  - all
