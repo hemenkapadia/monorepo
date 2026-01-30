@@ -1,0 +1,3 @@
+---
+# Group variables for RPi nodes
+apt_packages:

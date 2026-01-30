@@ -3,3 +3,6 @@
 
 # All .terraform directories
 .terraform
+
+# All ansible collections
+ansible_collections

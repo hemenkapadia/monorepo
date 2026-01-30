@@ -1,0 +1,82 @@
+---
+- name: Bootstrap Ansible User
+  hosts: all
+  become: true
+  vars:
+    bootstrap_user: ansible
+    bootstrap_user_home: /var/lib/ansible
+    bootstrap_user_shell: /bin/bash
+    bootstrap_user_ssh_key: "{{ lookup('file', '~/.ssh/ansible/id_ed25519.pub') }}"
+    bootstrap_user_allowed_sudo_command_groups:
+      APT:
+        - /usr/bin/apt *
+        - /usr/bin/apt-get *
+        - /usr/bin/apt-cache *
+      SYSTEM:
+        - /usr/bin/systemctl *
+        - /usr/bin/journalctl *
+      FILES:
+        - /usr/bin/mkdir *
+        - /usr/bin/rmdir *
+        - /usr/bin/rm *
+        - /usr/bin/chmod *
+        - /usr/bin/chown *
+        - /usr/bin/chgrp *
+      USER_MANAGEMENT:
+        - /usr/sbin/useradd *
+        - /usr/sbin/userdel *
+        - /usr/sbin/groupadd *
+        - /usr/sbin/groupdel *
+        - /usr/sbin/visudo *
+      ANSIBLE_PYTHON:
+        - /usr/bin/python3 *
+      SHELLS:
+        - /bin/bash *
+        - /bin/sh *
+
+  tasks:
+    - name: Ensure ansible group exists
+      ansible.builtin.group:
+        name: "{{ bootstrap_user }}"
+        state: present
+
+    - name: Create ansible user
+      ansible.builtin.user:
+        name: "{{ bootstrap_user }}"
+        group: "{{ bootstrap_user }}"
+        shell: "{{ bootstrap_user_shell }}"
+        home: "{{ bootstrap_user_home }}"
+        create_home: true
+        system: true
+        state: present
+
+    - name: Ensure .ssh directory exists
+      ansible.builtin.file:
+        path: "{{ bootstrap_user_home }}/.ssh"
+        state: directory
+        mode: '0700'
+        owner: "{{ bootstrap_user }}"
+        group: "{{ bootstrap_user }}"
+
+    - name: Set up authorized keys for ansible user
+      ansible.posix.authorized_key:
+        user: "{{ bootstrap_user }}"
+        state: present
+        key: "{{ bootstrap_user_ssh_key }}"
+
+    - name: Grant passwordless sudo to ansible user
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/90-{{ bootstrap_user }}"
+        owner: root
+        group: root
+        mode: '0440'
+        content: |
+          Defaults:{{ bootstrap_user }} !requiretty
+          {% for group, commands in bootstrap_user_allowed_sudo_command_groups.items() %}
+          Cmnd_Alias {{ group }} = {{ commands | join(', ') }}
+          {% endfor %}
+          {{ bootstrap_user }} ALL=(root) NOPASSWD: {{ bootstrap_user_allowed_sudo_command_groups.keys() | join(', ') }}
+
+    - name: Validate sudoers file
+      ansible.builtin.command: visudo -cf /etc/sudoers.d/90-{{ bootstrap_user }}
+      changed_when: false

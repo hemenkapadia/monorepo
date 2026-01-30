@@ -1,0 +1,42 @@
+---
+- name: Install KVM and virtualization packages
+  ansible.builtin.apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon-system
+      - libvirt-clients
+      - bridge-utils
+      - virt-manager
+      - libvirt-dev
+      - cloud-image-utils
+      - guestfs-tools
+      - ovmf
+    state: present
+  become: true
+
+- name: Ensure libvirtd is running
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+  become: true
+
+- name: Create a libvirt user and add to libvirt group
+  ansible.builtin.user:
+    name: libvirt
+    groups: libvirt
+    append: true
+  become: true
+
+- name: Add ansible user to libvirt group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: libvirt
+    append: true
+  become: true
+
+- name: Ensure bridge br0 exists, but do not create it if it doesn't exist
+  ansible.builtin.command: "ip link show br0"
+  register: kvm_host_br0_exists
+  ignore_errors: true
+  changed_when: false

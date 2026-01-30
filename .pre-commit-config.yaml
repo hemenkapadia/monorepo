@@ -61,3 +61,14 @@ repos:
         files: ^infra/terraform/.*\.tf$
       - id: terraform_trivy
         files: ^infra/terraform/.*\.tf$
+
+  # Pre-commit for Ansible files: https://github.com/ansible/ansible-lint
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.1.1
+    hooks:
+      - id: ansible-lint
+        files: ^infra/ansible/.*\.yml$
+        language_version: python3
+        entry: ansible-lint --project-dir infra/ansible --config infra/ansible/.ansible-lint.yml
+      # - id: ansible-syntax
+      #   files: ^infra/ansible/.*\.yml$
