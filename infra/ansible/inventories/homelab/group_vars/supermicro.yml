@@ -1,7 +1,3 @@
 ---
 # Group variables for Supermicro nodes
-packages_to_install:
-  - htop
-  - vim
-  - git
-  - curl
+apt_packages:

@@ -1,5 +1,3 @@
 ---
 # Group variables for RPi nodes
-packages_to_install:
-  - htop
-  - vim
+apt_packages:

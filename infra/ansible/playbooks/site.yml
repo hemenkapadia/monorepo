@@ -1,0 +1,10 @@
+---
+- name: Configure All Hosts
+  hosts: all
+  roles:
+    - base
+
+- name: Configure Supermicro Servers
+  hosts: supermicro
+  roles:
+    - kvm_host

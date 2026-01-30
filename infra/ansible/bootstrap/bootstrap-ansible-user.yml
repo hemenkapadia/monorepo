@@ -28,6 +28,12 @@
         - /usr/sbin/groupadd *
         - /usr/sbin/groupdel *
         - /usr/sbin/visudo *
+      ANSIBLE_PYTHON:
+        - /usr/bin/python3 *
+      SHELLS:
+        - /bin/bash *
+        - /bin/sh *
+
   tasks:
     - name: Ensure ansible group exists
       ansible.builtin.group:
@@ -69,7 +75,7 @@
           {% for group, commands in bootstrap_user_allowed_sudo_command_groups.items() %}
           Cmnd_Alias {{ group }} = {{ commands | join(', ') }}
           {% endfor %}
-          {{ bootstrap_user }} ALL=(ALL) NOPASSWD: {{ bootstrap_user_allowed_sudo_command_groups.keys() | join(', ') }}
+          {{ bootstrap_user }} ALL=(root) NOPASSWD: {{ bootstrap_user_allowed_sudo_command_groups.keys() | join(', ') }}
 
     - name: Validate sudoers file
       ansible.builtin.command: visudo -cf /etc/sudoers.d/90-{{ bootstrap_user }}

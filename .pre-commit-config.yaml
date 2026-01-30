@@ -69,6 +69,6 @@ repos:
       - id: ansible-lint
         files: ^infra/ansible/.*\.yml$
         language_version: python3
-        args: ["--project-dir", "infra/ansible"]
+        entry: ansible-lint --project-dir infra/ansible --config infra/ansible/.ansible-lint.yml
       # - id: ansible-syntax
       #   files: ^infra/ansible/.*\.yml$
