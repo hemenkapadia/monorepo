@@ -5,14 +5,15 @@
     cache_valid_time: 3600
   become: true
 
-- name: Install common packages
+- name: Install common packages for all homelab hosts. Pick packages from group_vars/all.yml
   ansible.builtin.apt:
-    name:
-      - curl
-      - wget
-      - htop
-      - git
-      - vim
-      - tree
+    name: "{{ common_apt_packages }}"
     state: present
   become: true
+
+- name: Install RPi packages. Pick packages from group_vars/rpi.yml
+  ansible.builtin.apt:
+    name: "{{ rpi_apt_packages }}"
+    state: present
+  become: true
+  when: "'rpi' in group_names"

@@ -7,9 +7,10 @@ ansible_ssh_private_key_file: ~/.ssh/ansible/id_ed25519
 ansible_python_interpreter: /usr/bin/python3
 
 # packages to be installed on all hosts
-apt_packages:
+common_apt_packages:
   - vim
   - git
   - curl
   - wget
   - htop
+  - tree

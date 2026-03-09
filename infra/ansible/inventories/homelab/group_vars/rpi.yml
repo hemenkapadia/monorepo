@@ -1,3 +1,10 @@
 ---
 # Group variables for RPi nodes
-apt_packages:
+# packages to be installed on RPi nodes
+rpi_apt_packages:
+  - vim
+  - git
+  - curl
+  - wget
+  - htop
+  - tree

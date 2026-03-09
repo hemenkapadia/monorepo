@@ -82,8 +82,32 @@ bootstrap/bootstrap-ansible-user.yml \
 ```
 Similary run the playbook for the supermicro nodes as well updating the limit to `supermicro` and the private key to the supermicro private key.
 
-## Management using Ansible
+### 6. Managing the Infrastructure
+After bootstrapping the nodes with the `ansible` user, use the playbooks located in the `playbooks/` directory to consistently configure and manage your homelab hosts.
 
+The `playbooks/homelab-base.yml` playbook is the primary entrypoint for your infrastructure configuration. It applies base configurations to all hosts, as well as role-specific configurations (like `kvm_host` for your Supermicro servers).
 
+To execute the site playbook across all managed nodes:
 
+```bash
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml
+```
 
+You can target specific groups or individual nodes using the `--limit` argument:
+
+```bash
+# Target only the Raspberry Pi cluster
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --limit rpi
+
+# Target only the baremetal Supermicro servers
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --limit supermicro
+```
+
+#### User Environment & Dotfiles (Chezmoi Playbook)
+To set up your user environment across your managed nodes, use the `playbooks/chezmoi.yml` playbook. This playbook installs the `chezmoi` binary to the `~/.local/bin` directory and automatically initializes your dotfiles repository.
+
+Run the playbook with:
+
+```bash
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/chezmoi.yml
+```
