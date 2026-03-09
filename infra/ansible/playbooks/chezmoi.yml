@@ -1,0 +1,6 @@
+---
+- name: Install and configure chezmoi
+  hosts: all
+  become: true
+  roles:
+    - role: chezmoi

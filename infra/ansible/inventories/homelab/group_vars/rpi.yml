@@ -1,5 +1,7 @@
 ---
 # Group variables for RPi nodes
+chezmoi_profile: home-rpi
+
 # packages to be installed on RPi nodes
 rpi_apt_packages:
   - vim

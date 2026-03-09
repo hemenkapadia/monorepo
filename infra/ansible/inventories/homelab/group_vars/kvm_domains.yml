@@ -1,2 +1,3 @@
 ---
 # Group variables for KVM nodes
+chezmoi_profile: home-kvm
