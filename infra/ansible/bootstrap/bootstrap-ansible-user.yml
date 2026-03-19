@@ -3,6 +3,7 @@
   hosts: all
   become: true
   vars:
+    regular_user: hemen
     bootstrap_user: ansible
     bootstrap_user_home: /var/lib/ansible
     bootstrap_user_shell: /bin/bash
@@ -64,7 +65,7 @@
         state: present
         key: "{{ bootstrap_user_ssh_key }}"
 
-    - name: Grant passwordless sudo to ansible user
+    - name: Grant passwordless sudo to ansible user and regular user
       ansible.builtin.copy:
         dest: "/etc/sudoers.d/90-{{ bootstrap_user }}"
         owner: root
@@ -76,6 +77,7 @@
           Cmnd_Alias {{ group }} = {{ commands | join(', ') }}
           {% endfor %}
           {{ bootstrap_user }} ALL=(root) NOPASSWD: {{ bootstrap_user_allowed_sudo_command_groups.keys() | join(', ') }}
+          {{ bootstrap_user }} ALL=({{ regular_user }}) NOPASSWD: ALL
 
     - name: Validate sudoers file
       ansible.builtin.command: visudo -cf /etc/sudoers.d/90-{{ bootstrap_user }}

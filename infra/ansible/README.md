@@ -99,6 +99,9 @@ You can target specific groups or individual nodes using the `--limit` argument:
 # Target only the Raspberry Pi cluster
 ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --limit rpi
 
+# Target only a specific Raspberry Pi node
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --limit rpi-node1
+
 # Target only the baremetal Supermicro servers
 ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --limit supermicro
 ```
