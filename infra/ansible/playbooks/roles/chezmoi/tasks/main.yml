@@ -1,60 +1,10 @@
 ---
 # tasks file for chezmoi
-- name: Ensure chezmoi_user is defined
-  ansible.builtin.assert:
-    that:
-      - chezmoi_user is defined
-    fail_msg: "chezmoi_user is not defined"
 
-- name: Ensure chezmoi_profile is defined
-  ansible.builtin.assert:
-    that:
-      - chezmoi_profile is defined
-    fail_msg: "chezmoi_profile is not defined"
+- name: Include install tasks
+  ansible.builtin.include_tasks: install.yml
+  when: chezmoi_state == "present"
 
-- name: Ensure .local/bin directory exists for user {{ chezmoi_user }}
-  ansible.builtin.file:
-    path: "/home/{{ chezmoi_user }}/.local/bin"
-    state: directory
-    owner: "{{ chezmoi_user }}"
-    group: "{{ chezmoi_user }}"
-    mode: "0755"
-  become: true
-
-- name: Download and install chezmoi # noqa: command-instead-of-shell
-  ansible.builtin.shell: 'sh -c "$(curl -fsLS chezmoi.io/getlb)" -- -b /home/{{ chezmoi_user }}/.local/bin'
-  args:
-    creates: "/home/{{ chezmoi_user }}/.local/bin/chezmoi"
-  become: true
-  become_user: "{{ chezmoi_user }}"
-  become_flags: "-i"
-  environment:
-    HOME: "/home/{{ chezmoi_user }}"
-    USER: "{{ chezmoi_user }}"
-
-- name: Initialize chezmoi with github username # noqa: command-instead-of-shell
-  ansible.builtin.shell: '/home/{{ chezmoi_user }}/.local/bin/chezmoi init --debug {{ chezmoi_github_username }}'
-  args:
-    creates: "/home/{{ chezmoi_user }}/.local/share/chezmoi/.git/config"
-  become: true
-  environment:
-    HOME: "/home/{{ chezmoi_user }}"
-    USER: "{{ chezmoi_user }}"
-
-- name: Apply chezmoi profile # noqa: command-instead-of-shell
-  ansible.builtin.shell: '/home/{{ chezmoi_user }}/.local/bin/chezmoi apply'
-  args:
-    creates: "/home/{{ chezmoi_user }}/.config/alacritty/alacritty.toml"
-  become: true
-  environment:
-    HOME: "/home/{{ chezmoi_user }}"
-    USER: "{{ chezmoi_user }}"
-
-- name: Recursively change ownership of all files in chezmoi_user's home directory to chezmoi_user
-  ansible.builtin.file:
-    path: "/home/{{ chezmoi_user }}"
-    state: directory
-    owner: "{{ chezmoi_user }}"
-    group: "{{ chezmoi_user }}"
-    recurse: true
-  become: true
+- name: Include cleanup tasks
+  ansible.builtin.include_tasks: cleanup.yml
+  when: chezmoi_state == "absent"

@@ -1,0 +1,18 @@
+---
+- name: Remove chezmoi binary
+  ansible.builtin.file:
+    path: "/home/{{ chezmoi_user }}/.local/bin/chezmoi"
+    state: absent
+  become: true
+
+- name: Remove chezmoi source directory
+  ansible.builtin.file:
+    path: "/home/{{ chezmoi_user }}/.local/share/chezmoi"
+    state: absent
+  become: true
+
+- name: Remove chezmoi config directory
+  ansible.builtin.file:
+    path: "/home/{{ chezmoi_user }}/.config/chezmoi"
+    state: absent
+  become: true

@@ -2,3 +2,4 @@
 # defaults file for chezmoi
 chezmoi_user: "hemen"
 chezmoi_github_username: "hemenkapadia"
+chezmoi_state: present

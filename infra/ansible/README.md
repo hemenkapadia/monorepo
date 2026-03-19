@@ -109,8 +109,15 @@ ansible-playbook -i inventories/homelab/hosts.yml playbooks/homelab-base.yml --l
 #### User Environment & Dotfiles (Chezmoi Playbook)
 To set up your user environment across your managed nodes, use the `playbooks/chezmoi.yml` playbook. This playbook installs the `chezmoi` binary to the `~/.local/bin` directory and automatically initializes your dotfiles repository.
 
-Run the playbook with:
+To install, initiali  ze and apply the chezmoi profile, run the playbook with:
 
 ```bash
 ansible-playbook -i inventories/homelab/hosts.yml playbooks/chezmoi.yml
 ```
+
+To remove chezmoi, run the playbook with:
+
+```bash
+ansible-playbook -i inventories/homelab/hosts.yml playbooks/chezmoi.yml -e chezmoi_state=absent
+```
+Use `--limit` option to limit the playbook to only run on specific nodes, e.g. `--limit rpi-node1` as explained above.
